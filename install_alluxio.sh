@@ -206,7 +206,7 @@ fi
 EOF
 
 
-cat >$PREFIX/$ALLUSIO_LIB_DIR/libexec/alluxio-layout.sh <<EOF
+cat >$PREFIX/$ALLUXIO_LIB_DIR/libexec/alluxio-layout.sh <<EOF
 #!/usr/bin/env bash
 
 echo 'we should change the exports to alluxio'
