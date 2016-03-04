@@ -134,8 +134,20 @@ install -d -m 0755 $PREFIX/$VAR_DIR/run/alluxio
 
 
 #cp -ra ${BUILD_DIR}/lib/* $PREFIX/${LIB_DIR}/lib/
+echo 'copying to tachyon dir jar files'
 cp client/target/tachyon-client*.jar core/target/tachyon*.jar $PREFIX/$LIB_DIR
-cp client/target/tachyon-client*.jar core/target/tachyon*.jar $PREFIX/$ALLUXIO_LIB_DIR
+#break this up to the 7 files changing the names
+#cp client/target/tachyon-client*.jar core/target/tachyon*.jar $PREFIX/$ALLUXIO_LIB_DIR
+cp client/target/tachyon-client-0.6.0.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-client-0.6.0.jar
+cp client/target/tachyon-client-0.6.0-jar-with-dependencies.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-client-0.6.0-jar-with-dependencies.jar
+cp core/target/tachyon-0.6.0.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0.jar
+cp core/target/tachyon-0.6.0-jar-with-dependencies.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-jar-with-dependencies.jar
+cp core/target/tachyon-0.6.0-javadoc.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-javadoc.jar
+cp core/target/tachyon-0.6.0-sources.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-sources.jar
+#cp core/target/tacyhon-0.6.0-tests.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-tests.jar
+echo 'asdf printing out jar files'
+ls -al core/target/*.jar
+echo 'do you see the tests.jar file?'
 
 cp -a bin/* $PREFIX/${LIB_DIR}/bin
 echo 'end copying to prefix/bin/'
@@ -227,3 +239,7 @@ else
   export JAVA="\$JAVA_HOME/bin/java"
 fi
 EOF
+
+if [ -e '/root/build/alluxio/rpm/BUILDROOT/alluxio-tfs-0.6.0-1.el6.x86_64/usr/lib/alluxio/tachyon-0.6.0.jar' ]; then
+  cp /root/build/alluxio/rpm/BUILDROOT/alluxio-tfs-0.6.0-1.el6.x86_64/usr/lib/alluxio/tachyon-0.6.0.jar alluxio-tfs-0.6.0-1.el6.x86_64/usr/lib/alluxio/alluxio-0.6.0.jar
+fi
