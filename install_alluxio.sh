@@ -89,20 +89,16 @@ for var in PREFIX BUILD_DIR ; do
     usage
   fi
 done
-echo 'prefix:$PREFIX and build_dir:$BUILD_DIR have to be set'
-echo 'before the install LIB_DIR:$LIB_DIR'
-echo $LIB_DIR
-echo 'we concatenate /usr/lib/tachyon to LIB_DIR'
-#LIB_DIR=${LIB_DIR:-/usr/lib/tachyon}
-echo 'after assignment $LIBDIR'
-echo $LIB_DIR
+
 ALLUXIO_LIB_DIR=${ALLUXIO_LIB_DIR:-/usr/lib/alluxio}
-echo 'alluxio_lib_dir' $ALLUXIO_LIB_DIR
-echo 'installed_lib_dir' $INSTALLED_LIB_DIR
-echo 'bin_dir' $BIN_DIR
-echo 'prefix:' $PREFIX
 LIBEXEC_DIR=${INSTALLED_LIB_DIR:-/usr/libexec}
 BIN_DIR=${BIN_DIR:-/usr/bin}
+
+echo "PREFIX:$PREFIX"
+echo "LIB_DIR:$LIB_DIR"
+echo "ALLUXIO_LIB_DIR:$ALLUXIO_LIB_DIR"
+echo "DATA_DIR:$DATA_DIR"
+echo "is this BUILDROOT OR BUILD?"
 
 #install -d -m 0755 $PREFIX/$LIB_DIR
 install -d -m 0755 $PREFIX/$ALLUXIO_LIB_DIR
@@ -115,7 +111,7 @@ install -d -m 0755 $PREFIX/$ALLUXIO_LIB_DIR/lib
 #install -d -m 0755 $PREFIX/$LIB_DIR/share
 install -d -m 0755 $PREFIX/$ALLUXIO_LIB_DIR/share
 install -d -m 0755 $PREFIX/$DATA_DIR
-install -d -m 0755 $PREFIX/$DATA_DIR/tachyon
+#install -d -m 0755 $PREFIX/$DATA_DIR/tachyon
 install -d -m 0755 $PREFIX/$DATA_DIR/alluxio
 install -d -m 0755 $PREFIX/etc
 #install -d -m 0755 $PREFIX/etc/tachyon
@@ -128,8 +124,8 @@ install -d -m 0755 $PREFIX/$VAR_DIR/log/alluxio
 install -d -m 0755 $PREFIX/$VAR_DIR/lib/alluxio/journal
 #install -d -m 0755 $PREFIX/$VAR_DIR/lib/tachyon/core/src/main/webapp
 install -d -m 0755 $PREFIX/$VAR_DIR/lib/alluxio/core/src/main/webapp
-ln -s $VAR_DIR/log/tachyon $PREFIX/$VAR_DIR/lib/tachyon/logs
-install -d -m 0755 $PREFIX/$VAR_DIR/run/tachyon
+ln -s $VAR_DIR/log/alluxio $PREFIX/$VAR_DIR/lib/alluxio/logs
+#install -d -m 0755 $PREFIX/$VAR_DIR/run/tachyon
 install -d -m 0755 $PREFIX/$VAR_DIR/run/alluxio
 
 
@@ -144,20 +140,27 @@ cp core/target/tachyon-0.6.0.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0.jar
 cp core/target/tachyon-0.6.0-jar-with-dependencies.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-jar-with-dependencies.jar
 cp core/target/tachyon-0.6.0-javadoc.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-javadoc.jar
 cp core/target/tachyon-0.6.0-sources.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-sources.jar
-cp core/target/tacyhon-0.6.0-tests.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-tests.jar
-
-echo 'asdf printing out jar files'
-ls -al core/target/*.jar
-echo 'do you see the tests.jar file?'
+cp core/target/tachyon-0.6.0-tests.jar $PREFIX/$ALLUXIO_LIB_DIR/alluxio-0.6.0-tests.jar
+echo "done copying and renaming tachyon jars to alluxio"
 
 #cp -a bin/* $PREFIX/${LIB_DIR}/bin
 #echo 'end copying to prefix/bin/'
+echo "copying bin/files to allusiolibdir bin"
 cp -a bin/* $PREFIX/${ALLUXIO_LIB_DIR}/bin
+echo "come back here and change cp to mv"
+echo "PREFIX:$PREFIX and ALLUXIO_LIB_DIR:$ALLUXIO_LIB_DIR"
+mv $PREFIX/${ALLUXIO_LIB_DIR}/bin/tachyon $PREFIX/${ALLUXIO_LIB_DIR}/bin/alluxio
+mv $PREFIX/${ALLUXIO_LIB_DIR}/bin/tachyon-start.sh $PREFIX/${ALLUXIO_LIB_DIR}/bin/alluxio-start.sh
+mv $PREFIX/${ALLUXIO_LIB_DIR}/bin/tachyon-stop.sh $PREFIX/${ALLUXIO_LIB_DIR}/bin/alluxio-stop.sh
+mv $PREFIX/${ALLUXIO_LIB_DIR}/bin/tachyon-workers.sh $PREFIX/${ALLUXIO_LIB_DIR}/bin/alluxio-workers.sh
+mv $PREFIX/${ALLUXIO_LIB_DIR}/bin/tachyon-mount.sh $PREFIX/${ALLUXIO_LIB_DIR}/bin/alluxio-mount.sh
+
 echo 'end copyong to prefix/alluxio_lib_dir/bin'
 #cp -a libexec/* $PREFIX/${LIB_DIR}/libexec
 #echo 'end copyong prefix/lib_dir/libexec'
+echo "start copy libexec/* to alluxio libexec"
 cp -a libexec/* $PREFIX/${ALLUXIO_LIB_DIR}/libexec
-echo 'copying to prefix/alluxio_lib_dir'
+echo 'copying webapp to alluxio'
 #cp -rf core/src/main/webapp $PREFIX/$VAR_DIR/lib/tachyon/core/src/main
 cp -rf core/src/main/webapp $PREFIX/$VAR_DIR/lib/alluxio/core/src/main
 
@@ -169,14 +172,18 @@ cp conf/tachyon-env.sh.template $PREFIX/etc/alluxio/conf/alluxio-env.sh
 
 
 # Copy in the /usr/bin/tachyon wrapper
-#echo "I dont understand the tachyon wrapper"
-#install -d -m 0755 $PREFIX/$BIN_DIR
-#echo 'we need to cp tachyon to alluxio for the executables?'
+echo "I dont understand the tachyon wrapper"
+install -d -m 0755 $PREFIX/$BIN_DIR
+echo "tachyon wrapper PREFIX:$PREFIX"
+echo "tachyon wrapper BIN_DIR:$BIN_DIR"
+
 
 # Copy in tachyon deploy scripts
+echo "copy in the alluxio/tacyhyon deploy ssciprts"
+
 #cp -rf deploy $PREFIX/$LIB_DIR/share
-#cp -rf deploy $PREFIX/$ALLUXIO_LIB_DIR/share
-#echo 'end tachyon deploy scripts'
+cp -rf deploy $PREFIX/$ALLUXIO_LIB_DIR/share
+echo 'end tachyon deploy scripts'
 
 # Prefix is correct at time of install,
 # but we dont want to escape it before that point.
@@ -185,17 +192,23 @@ cp conf/tachyon-env.sh.template $PREFIX/etc/alluxio/conf/alluxio-env.sh
 #!/bin/bash
 
 # Autodetect JAVA_HOME if not defined
-. /usr/lib/bigtop-utils/bigtop-detect-javahome
+. /usr/bin/bigtop-detect-javahome
 # Lib dir => ${LIB_DIR}
 #!/usr/bin/env bash
 #exec ${LIB_DIR}/bin/tachyon "\$@"
 #EOF
 #chmod 755 $PREFIX/$BIN_DIR/tachyon
-c
-p $PREFIX/$BIN_DIR/tachyon $PREFIX/$BIN_DIR/alluxio
+echo "looking for tachyon executuable"
+echo "prefix: $PREFIX"
+echo "bin_dir: $BIN_DIR"
+#what are we doing here? we are copying * from BUILDROOT/alluxio-tfs-xx/usr/lib/alluxio/bin
+#to BUILD?
+#cp $PREFIX/$BIN_DIR/tachyon $PREFIX/$BIN_DIR/alluxio
 
-chmod 755 $PREFIX/$BIN_DIR/alluxio
+#chmod 755 $PREFIX/$BIN_DIR/alluxio
 #this is tricky, it creates the actual file tachyon-layout.sh. Cool. Replicate
+mv $PREFIX/$ALLUXIO_LIB_DIR/libexec/tachyon-config.sh $PREFIX/$ALLUXIO_LIB_DIR/libexec/alluxio-config.sh
+mv $PREFIX/$ALLUXIO_LIB_DIR/libexec/tachyon-layout.sh.linux.template $PREFIX/$ALLUXIO_LIB_DIR/libexec/alluxio-layout.sh.linux.template
 
 cat >$PREFIX/$ALLUXIO_LIB_DIR/libexec/alluxio-layout.sh <<EOF
 #!/usr/bin/env bash
@@ -219,3 +232,4 @@ else
 fi
 EOF
 
+echo "end install_alluxio.sh"
