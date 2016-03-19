@@ -18,8 +18,11 @@ Usage="Usage: alluxio-mount.sh [Mount|SudoMount] [MACHINE]
 function init_env() {
   bin=`cd "$( dirname "$1" )"; pwd`
 
-  DEFAULT_LIBEXEC_DIR="$bin"/../libexec
-  ALLUXIO_LIBEXEC_DIR=${ALLUXIO_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+#  DEFAULT_LIBEXEC_DIR="$bin"/../libexec
+#  ALLUXIO_LIBEXEC_DIR=${ALLUXIO_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+  echo "repeat of fucked up libexec code"
+  export ALLUXIO_LIBEXEC_DIR=/usr/lib/alluxio/libexec
+
   . $ALLUXIO_LIBEXEC_DIR/alluxio-config.sh
 
   if [ -z $ALLUXIO_WORKER_MEMORY_SIZE ] ; then

@@ -17,15 +17,15 @@ Where component is one of:
 bin=`cd "$( dirname "$0" )"; pwd`
 
 kill_master() {
-  $LAUNCHER $bin/alluxio killAll alluxio.master.AlluxioMaster
+  $LAUNCHER $bin/alluxio killAll tachyon.master.TachyonMaster
 }
 
 kill_worker() {
-  $LAUNCHER $bin/alluxio killAll alluxio.worker.AlluxioWorker
+  $LAUNCHER $bin/alluxio killAll tachyon.worker.TachyonWorker
 }
 
 kill_remote_workers() {
-  $LAUNCHER $bin/alluxio-workers.sh $bin/alluxio killAll alluxio.worker.AlluxioWorker
+  $LAUNCHER $bin/alluxio-workers.sh $bin/alluxio killAll tachyon.worker.TachyonWorker
 }
 
 WHAT=${1:-all}

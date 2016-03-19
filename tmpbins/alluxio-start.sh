@@ -38,8 +38,10 @@ ensure_dirs() {
 }
 
 get_env() {
-  DEFAULT_LIBEXEC_DIR="$bin"/../libexec
-  ALLUXIO_LIBEXEC_DIR=${ALLUXIO_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+#  DEFAULT_LIBEXEC_DIR="$bin"/../libexec
+#  ALLUXIO_LIBEXEC_DIR=${ALLUXIO_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+   echo "fucked up libexec_dir setting in alluxio-start.sh"
+   export ALLUXIO_LIBEXEC_DIR=/usr/lib/alluxio/libexec
   . $ALLUXIO_LIBEXEC_DIR/alluxio-config.sh
 }
 
@@ -100,7 +102,7 @@ start_master() {
   fi
 
   echo "Starting master @ $MASTER_ADDRESS"
-  (nohup $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.logger.type="MASTER_LOGGER" -Dlog4j.configuration=file:$ALLUXIO_CONF_DIR/log4j.properties $ALLUXIO_MASTER_JAVA_OPTS alluxio.master.AlluxioMaster > $ALLUXIO_LOGS_DIR/master.out 2>&1) &
+  (nohup $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.logger.type="MASTER_LOGGER" -Dlog4j.configuration=file:$ALLUXIO_CONF_DIR/log4j.properties $ALLUXIO_MASTER_JAVA_OPTS tachyon.master.TachyonMaster > $ALLUXIO_LOGS_DIR/master.out 2>&1) &
 }
 
 start_worker() {
@@ -115,7 +117,7 @@ start_worker() {
   fi
 
   echo "Starting worker @ `hostname -f`"
-  (nohup $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.logger.type="WORKER_LOGGER" -Dlog4j.configuration=file:$ALLUXIO_CONF_DIR/log4j.properties $ALLUXIO_WORKER_JAVA_OPTS alluxio.worker.AlluxioWorker > $ALLUXIO_LOGS_DIR/worker.out 2>&1 ) &
+  (nohup $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.logger.type="WORKER_LOGGER" -Dlog4j.configuration=file:$ALLUXIO_CONF_DIR/log4j.properties $ALLUXIO_WORKER_JAVA_OPTS tachyon.worker.TachyonWorker > $ALLUXIO_LOGS_DIR/worker.out 2>&1 ) &
 }
 
 restart_worker() {
@@ -126,14 +128,14 @@ restart_worker() {
   RUN=`ps -ef | grep "alluxio.worker.AlluxioWorker" | grep "java" | wc | cut -d" " -f7`
   if [[ $RUN -eq 0 ]] ; then
     echo "Restarting worker @ `hostname -f`"
-    (nohup $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.logger.type="WORKER_LOGGER" -Dlog4j.configuration=file:$ALLUXIO_CONF_DIR/log4j.properties $ALLUXIO_WORKER_JAVA_OPTS alluxio.worker.AlluxioWorker > $ALLUXIO_LOGS_DIR/worker.out 2>&1) &
+    (nohup $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.logger.type="WORKER_LOGGER" -Dlog4j.configuration=file:$ALLUXIO_CONF_DIR/log4j.properties $ALLUXIO_WORKER_JAVA_OPTS tachyon.worker.TachyonWorker > $ALLUXIO_LOGS_DIR/worker.out 2>&1) &
   fi
 }
 
 run_safe() {
   while [ 1 ]
   do
-    RUN=`ps -ef | grep "alluxio.master.AlluxioMaster" | grep "java" | wc | cut -d" " -f7`
+    RUN=`ps -ef | grep "tachyon.master.TachyonMaster" | grep "java" | wc | cut -d" " -f7`
     if [[ $RUN -eq 0 ]] ; then
       echo "Restarting the system master..."
       start_master

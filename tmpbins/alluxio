@@ -36,9 +36,12 @@ bin=`cd "$( dirname "$0" )"; pwd`
 echo "CLASSPATH:$CLASSPATH:/usr/lib/alluxio/alluxio-client-0.6.0-jar-with-dependencies.jar"
 echo "ALLUXIO_CLASSPATH:$ALLUXIO_CLASSPATH"
 
-DEFAULT_LIBEXEC_DIR="$bin"/../libexec
-ALLUXIO_LIBEXEC_DIR=${ALLUXIO_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+#DEFAULT_LIBEXEC_DIR="$bin"/../libexec
+#ALLUXIO_LIBEXEC_DIR=${ALLUXIO_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+export ALLUXIO_LIBEXEC_DIR=/usr/lib/alluxio/libexec
 . $ALLUXIO_LIBEXEC_DIR/alluxio-config.sh
+
+#export "ALLUXIO_LIBEXEC_DIR:$ALLUXIO_LIBEXEC_DIR"
 
 function runTest {
   Usage="Usage: alluxio runTest <Basic|BasicRawTable|BasicCheckpoint|BasicNonByteBuffer> <MUST_CACHE|TRY_CACHE|CACHE_THROUGH|THROUGH|ASYNC_THROUGH>"
@@ -59,20 +62,20 @@ function runTest {
   case "$1" in
     Basic)
       file+="/BasicFile_$2"
-      class="alluxio.examples.BasicOperations"
+      class="tachyon.examples.BasicOperations"
       ;;
     BasicRawTable)
       file+="/BasicRawTable_$2"
-      class="alluxio.examples.BasicRawTableOperations"
+      class="tachyon.examples.BasicRawTableOperations"
       ;;
     BasicCheckpoint)
       file+="/BasicCheckpoint"
-      class="alluxio.examples.BasicCheckpoint"
+      class="tachyon.examples.BasicCheckpoint"
       args="10"
       ;;
     BasicNonByteBuffer)
       file+="/BasicNonByteBuffer_$2"
-      class="alluxio.examples.BasicNonByteBufferOperations"
+      class="tachyon.examples.BasicNonByteBufferOperations"
       ;;
     *)
       echo "Unknown test: $1 with type $2" 1>&2
@@ -195,12 +198,12 @@ elif [ "$COMMAND" == "bootstrap-conf" ]; then
   exit 0
 elif [ "$COMMAND" == "formatWorker" ]; then
   echo "Formatting Alluxio Worker @ `hostname -f`"
-  CLASS=alluxio.Format
+  CLASS=tachyon.Format
   PARAMETER=worker
 elif [ "$COMMAND" == "tfs" ]; then
   CLASS=tachyon.command.TFsShell
 elif [ "$COMMAND" == "loadufs" ]; then
-  CLASS=alluxio.util.UfsUtils
+  CLASS=tachyon.util.UfsUtils
 elif [ "$COMMAND" == "runTest" ]; then
   runTest "$@"
   exit $?
@@ -237,10 +240,13 @@ elif [ "$COMMAND" == "clearCache" ]; then
   sync; echo 3 > /proc/sys/vm/drop_caches ;
   exit 0
 elif [ "$COMMAND" == "version" ]; then
-  CLASS=alluxio.Version
+  CLASS=tachyon.Version
 else
   printUsage
   exit 1
 fi
 
 $JAVA -cp $CLASSPATH -Dalluxio.home=$ALLUXIO_HOME -Dalluxio.master.hostname=$ALLUXIO_MASTER_ADDRESS -Dalluxio.logger.type=USER_LOGGER $ALLUXIO_JAVA_OPTS $CLASS $PARAMETER $@
+
+echo "note to self, core/src/thrift/alluxio.thrift is wrong"
+
