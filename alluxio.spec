@@ -54,6 +54,7 @@ Requires: bigtop-utils
 
 # disable repacking jars
 %define __arch_install_post %{nil}
+%define debug_package %{nil}
 
 %description
 Tachyon is a fault tolerant distributed file system
@@ -121,9 +122,8 @@ done
 #%{_datadir}/%{alluxio_name}/usr/bin/alluxio
 %{alluxio_home}/share
 
-
 %clean
-rm -rf $RPM_BUILD_ROOT
+echo "should no clean here!!!!!!!"
 
 %changelog
 * Thu Mar 05 2015 Huamin Chen
