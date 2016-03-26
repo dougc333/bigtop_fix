@@ -13,7 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
 Name:           alluxio-tfs
+#this is used for the rpm name
+%define 	alluxio_version 0.6.0
+%define		alluxio_release 1%{?dist}
 Version:        %{alluxio_version}
 Release:        %{alluxio_release}
 Summary:       Reliable file sharing at memory speed across cluster frameworks
@@ -22,7 +27,7 @@ URL:           http://tachyon-project.org/
 Group:         Development/Libraries
 BuildArch:     noarch
 
-Source0:       %{alluxio_name}-%{alluxio_base_version}.tar.gz
+Source0:       v0.6.0.tar.gz
 Source1:       do-component-build
 Source2:       install_alluxio.sh
 Source3:       init.d.tmpl
@@ -31,9 +36,9 @@ Source5:       alluxio-worker.svc
 %define        alluxio_name alluxio
 %define        alluxio_home /usr/lib/%{alluxio_name}
 %define        alluxio_services master worker
-%define        var_lib /var/lib/%{alluxio_name}
-%define        var_run /var/run/%{alluxio_name}
-%define        var_log /var/log/%{alluxio_name}
+%define        var_lib /var/lib/alluxio
+%define        var_run /var/run/alluxio
+%define        var_log /var/log/alluxio
 
 %global        initd_dir %{_sysconfdir}/init.d
 
@@ -69,7 +74,7 @@ avoids going to disk to load data-sets that
 are frequently read.
 
 %prep
-%setup -n %{alluxio_name}-%{alluxio_base_version}
+%setup -n alluxio-0.6.0
 
 %build
 bash $RPM_SOURCE_DIR/do-component-build
